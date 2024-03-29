@@ -13,9 +13,10 @@
     <p>Class Teachers:</p>
     <ul>
         {% for teacher in school_class.class_teachers.all %}
-            <li>{{ teacher.name }}</li>
+            <li>{{ teacher }}</li>
         {% endfor %}
     </ul>
+
     
     <!-- Vis lektioner i klassen -->
 <p>Total antal lektioner i klassen: {{ total_lessons_in_class }}</p>
@@ -26,7 +27,7 @@
         {% endfor %}
     </ul>
     
-           <!-- Tabel med elevdata -->
+<!-- Tabel med elevdata -->
        <h2>Student Data:</h2>
        <table border="1">
            <thead>
@@ -35,11 +36,11 @@
                    <th>Age Number</th>
                    <th>School Fee Level</th>
                    <th>School Fee Level Name</th>
-                   <th>Amount</th>  <!-- Tilføj beløbskolonnen -->
+                   <th>Amount</th>  
                </tr>
            </thead>
            <tbody>
-               {% for student in school_class.student_set.all %}
+               {% for student in school_class.students.all %}
                    <tr>
                        <td>{{ student.name }}</td>
                        <td>{{ student.age_number }}</td>
@@ -51,7 +52,7 @@
                {% endfor %}
                <tr>
                 <td colspan=4>Total number of students:</td>
-                <td colspan=1>{{ school_class.student_set.count }}</td>
+                <td colspan=1>{{ school_class.students.count }}</td>
                </tr>
                <tr>
                 <td colspan=4>Total amount:</td>
@@ -60,10 +61,8 @@
            </tbody>
        </table>
 
-
+<!-- Teacher Data -->
        <h2>Teacher Data:</h2>
-
-<!-- Tilføj dette til din skabelon -->
 <table border="1">
     <thead>
         <tr>
@@ -111,6 +110,6 @@
 </table>
 
 
-
+<a href="http://127.0.0.1:8000/skoleadmin/" target="_blank">Admin</a>
 </body>
 </html>

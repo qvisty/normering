@@ -6,7 +6,7 @@ from collections import defaultdict
 
 
 def school_class_detail(request, class_id):
-    school_class = SchoolClass.objects.annotate(total_school_fee=Sum('student__school_fee__amount')).get(pk=class_id)
+    school_class = SchoolClass.objects.annotate(total_school_fee=Sum('students__school_fee__amount')).get(pk=class_id)
     lessons = Lesson.objects.filter(school_class=school_class).annotate(
         teacher_name=Concat('teachers__name', Value(' - '), output_field=CharField()),
         total_lessons=Count('id'),
