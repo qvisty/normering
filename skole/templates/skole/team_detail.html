@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="da">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Team Details</title>
+    </head>
+    <body>
+        <h1>Team Details - {{ team.name }}</h1>
+        <a href="http://127.0.0.1:8000/skoleadmin/" target="_blank">Admin</a> - <a href="{% url 'homepage' %}">Forside</a>
+        <hr>
+        
+        <ul>
+        {% for school_class in team.school_classes.all  %}
+        <li><a href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a></li>
+        {% endfor %}
+        </ul>
+        <h1>Summary for {{ team.name }}</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Klasse</th>
+            <th>Antal elever</th>
+            <th>Sum af Elev Level</th>
+            <th>Sum af Elev Beløb</th>
+            <th>Lektioner i klassen</th>
+            <th>Personaletyper</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in summary_data %}
+            <tr>
+                <td>{{ data.class_name }}</td>
+                <td>{{ data.num_students }}</td>
+                <td>{{ data.sum_school_fee_amount }}</td>
+                <td>{{ data.sum_school_fee }}</td>
+                <td>{{ data.num_lessons }}</td>
+                <td>...
+                    </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    </body>
+</html>
