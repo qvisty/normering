@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Class Details</title>
+</head>
+<body>
+    <h1>School Class Details</h1>
+    <h2>{{ school_class.name }}</h2>
+
+    <!-- Vis klassens lærere -->
+    <p>Class Teachers:</p>
+    <ul>
+        {% for teacher in school_class.class_teachers.all %}
+            <li>{{ teacher.name }}</li>
+        {% endfor %}
+    </ul>
+    
+    <!-- Vis lektioner i klassen -->
+<p>Total antal lektioner i klassen: {{ total_lessons_in_class }}</p>
+    <ul>
+        {% for lesson in school_class.lesson_set.all %}
+            <li>{{ lesson }}</li>
+            
+        {% endfor %}
+    </ul>
+    
+           <!-- Tabel med elevdata -->
+       <h2>Student Data:</h2>
+       <table border="1">
+           <thead>
+               <tr>
+                   <th>Name</th>
+                   <th>Age Number</th>
+                   <th>School Fee Level</th>
+                   <th>School Fee Level Name</th>
+                   <th>Amount</th>  <!-- Tilføj beløbskolonnen -->
+               </tr>
+           </thead>
+           <tbody>
+               {% for student in school_class.student_set.all %}
+                   <tr>
+                       <td>{{ student.name }}</td>
+                       <td>{{ student.age_number }}</td>
+                       <td>{{ student.school_fee.level }}</td>
+                       <td>{{ student.school_fee.name }}</td>
+                       <td>{{ student.school_fee.amount|floatformat }} kr.</td> <!-- Indsæt beløb fra SchoolFee -->
+
+                   </tr>
+               {% endfor %}
+               <tr>
+                <td colspan=4>Total number of students:</td>
+                <td colspan=1>{{ school_class.student_set.count }}</td>
+               </tr>
+               <tr>
+                <td colspan=4>Total amount:</td>
+                <td colspan=1>{{ school_class.total_school_fee|floatformat }} kr.</td>
+               </tr>
+           </tbody>
+       </table>
+
+
+       <h2>Teacher Data:</h2>
+
+<!-- Tilføj dette til din skabelon -->
+<table border="1">
+    <thead>
+        <tr>
+            <th>Teacher</th>
+            <th>Employment Category</th>
+            <th>Total Lessons</th>
+            <th>Subject</th>
+            <th>Classroom</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lesson in lessons %}
+            <tr>
+                <td>{{ lesson.teacher_name }}</td>
+                <td>{{ lesson.employment_category }}</td> <!-- Vis ansættelseskategorien fra view -->
+                <td>{{ lesson.total_lessons_per_teacher }}</td>
+                <td>{{ lesson.subject }}</td>
+                <td>{{ lesson.classroom }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Sum up Data:</h2>
+<!-- Opsummerende tabel -->
+<table border="1">
+    <thead>
+        <tr>
+            <th>Personalekategori - skal rettes</th>
+            <th>Total antal timer</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for category, hours in total_hours %}
+            <tr>
+                <td>{{ category }}</td>
+                <td>{{ hours }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td><strong>Sum af total antal timer</strong></td>
+            <td><strong>{{ total_sum }}</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+</body>
+</html>
