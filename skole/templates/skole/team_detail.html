@@ -25,6 +25,7 @@
             <th>Sum af Elev Beløb</th>
             <th>Lektioner i klassen</th>
             <th>Personaletyper</th>
+            <th>Lønforbrug</th>
         </tr>
     </thead>
     <tbody>
@@ -45,12 +46,34 @@
                    {% endfor %}
                 </ul>
                     
-            </td>
+                </td>
+                <td>0 kroner #TODO</td>
                     
             </tr>
         {% endfor %}
     </tbody>
-</table>
+    <tfoot>
+        <tr>
+          <td>I alt</td>
+          <td>{{ totals.num_students }}</td>
+          <td>{{ totals.school_fee_amount }}</td>
+          <td>{{ totals.school_fee }}</td>
+          <td>{{ totals.num_lessons }}</td>
+          <td><ul>
+            {% for category, hours in total_hours %}
+                <li>{{ category }}: {{ hours }}</li>
+            {% endfor %}
+        </ul></td>
+        <td>{{ total_price_for_team }}</td>
 
+        </tr>
+      </tfoot>
+</table>
+    <h2>Overskud = {{ total_school_fee_for_team }} - {{ total_price_for_team }} = {{ surplus }}</h2>
+    <h2>Forbrugs-%: {{ percentage_used }}</h2>
+
+    <!-- Additional HTML code for displaying other details as needed -->
+
+</body>
     </body>
 </html>

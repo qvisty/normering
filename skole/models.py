@@ -50,6 +50,7 @@ class Staff(models.Model):
         """
         return cls.objects.filter(taught_lessons__school_class=school_class).count()
 
+from collections import Counter
 
 class SchoolClass(models.Model):
     IND = 'Indskoling'
@@ -74,7 +75,7 @@ class SchoolClass(models.Model):
         Returnerer en dictionary med personalekategorier som nøgler og antal lektioner som værdier.
         """
         # Opret en dictionary for at lagre det samlede antal lektioner pr. personalekategori
-        total_lessons_by_category = defaultdict(int)
+        total_lessons_by_category = Counter()
 
         # Gennemgå alle lektioner i klassen
         for lesson in self.lessons.all():
@@ -84,7 +85,7 @@ class SchoolClass(models.Model):
                 category = teacher.employment_category.name
                 # Tilføj antallet af lektioner for denne lektion til den tilsvarende kategori i dictionarien
                 total_lessons_by_category[category] += 1
-        
+            
         return total_lessons_by_category
         
     def __str__(self):
