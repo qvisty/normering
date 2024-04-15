@@ -3,6 +3,7 @@ from django.db.models import Sum, CharField, Count, Value, F
 from django.db.models.functions import Concat
 from .models import SchoolClass, Lesson, Team, SchoolFee, Staff, EmploymentCategory
 from collections import defaultdict
+from operator import itemgetter
 
 
 def school_class_detail(request, class_id):
@@ -51,12 +52,15 @@ def school_class_detail(request, class_id):
     return render(request, 'skole/schoolclass_detail.html', {'school_class': school_class, 'lessons': lessons, 'total_hours': total_hours_list, 'total_sum': total_sum, 'total_lessons_in_class': total_lessons_in_class, 'total_price_for_class': total_price_for_class, 'surplus': surplus, 'percentage_used': percentage_used})
 
     
+from operator import itemgetter
+
 def team_detail(request, team_id):
     team = Team.objects.get(pk=team_id)
     school_classes = SchoolClass.objects.filter(team=team)
     employment_categories = EmploymentCategory.objects.all()
-
+    
     summary_data = []
+    
     for school_class in school_classes:
         # Beregn antal elever i klassen
         num_students = school_class.students.count()
@@ -70,6 +74,15 @@ def team_detail(request, team_id):
         # Beregn antal lektioner i klassen
         num_lessons = school_class.lessons.count()
 
+        # Hent det samlede antal lektioner pr. personalekategori for denne klasse
+        total_lessons_by_category = school_class.total_lessons_per_category()
+        
+        # Opret en dictionary med personalekategorier som nøgler og antal lektioner som værdier
+        lessons_by_category_dict = {f"{category}": lessons for category, lessons in total_lessons_by_category.items()}
+        
+        # Opret en streng, der indeholder navnet på skoleklassen efterfulgt af lektionerne pr. personalekategori
+        class_data = lessons_by_category_dict
+
         # Tilføj opsummeringsdata til listen
         summary_data.append({
             'class_name': school_class.name,
@@ -77,11 +90,11 @@ def team_detail(request, team_id):
             'sum_school_fee': sum_school_fee,
             'sum_school_fee_amount': sum_school_fee_amount,
             'num_lessons': num_lessons,
-            'employment_categories': employment_categories
+            "employment_categories": employment_categories,
+            "class_data": class_data, 
         })
 
     return render(request, 'skole/team_detail.html', {'team': team, 'summary_data': summary_data})
-
 
 
 def homepage(request):

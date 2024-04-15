@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.db import models
 from datetime import datetime
 from django.utils.timesince import timesince
@@ -39,6 +40,16 @@ class Staff(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+    
+    @classmethod
+    def total_lessons_taught_in_class(cls, school_class):
+        """
+        Beregn det samlede antal lektioner, alle medarbejdere i denne kategori har undervist i en bestemt klasse.
+        """
+        return cls.objects.filter(taught_lessons__school_class=school_class).count()
+
 
 class SchoolClass(models.Model):
     IND = 'Indskoling'
@@ -57,7 +68,25 @@ class SchoolClass(models.Model):
     class_group = models.CharField(max_length=20, choices=AGE_GROUP_CHOICES, default=DEFAULT_AGE_GROUP)
     age_number = models.IntegerField(blank=True, null=True)
 
+    def total_lessons_per_category(self):
+        """
+        Beregn det samlede antal lektioner pr. personalekategori for denne klasse.
+        Returnerer en dictionary med personalekategorier som nøgler og antal lektioner som værdier.
+        """
+        # Opret en dictionary for at lagre det samlede antal lektioner pr. personalekategori
+        total_lessons_by_category = defaultdict(int)
 
+        # Gennemgå alle lektioner i klassen
+        for lesson in self.lessons.all():
+            # Gennemgå alle lærere for hver lektion
+            for teacher in lesson.teachers.all():
+                # Hent personalekategorien for læreren
+                category = teacher.employment_category.name
+                # Tilføj antallet af lektioner for denne lektion til den tilsvarende kategori i dictionarien
+                total_lessons_by_category[category] += 1
+        
+        return total_lessons_by_category
+        
     def __str__(self):
         return self.name
 

@@ -35,8 +35,18 @@
                 <td>{{ data.sum_school_fee_amount }}</td>
                 <td>{{ data.sum_school_fee }}</td>
                 <td>{{ data.num_lessons }}</td>
-                <td>...
-                    </td>
+                <td>
+                   
+                    <ul>
+                   {% for cat, hours in data.class_data.items %}
+                   <li>
+                    {{ cat }}: {{ hours }} timer
+                </li>
+                   {% endfor %}
+                </ul>
+                    
+            </td>
+                    
             </tr>
         {% endfor %}
     </tbody>
