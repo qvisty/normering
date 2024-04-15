@@ -1,135 +1,130 @@
-<!DOCTYPE html>
-<html lang="da">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>School Class Details</title>
-    </head>
-    <body>
-        <h1>School Class Details - {{ school_class.name }}</h1>
-        <a href="http://127.0.0.1:8000/skoleadmin/" target="_blank">Admin</a> - <a href="{% url 'homepage' %}">Forside</a> -         <a href="{% url 'team_detail' team_id=school_class.team.id %}">{{ school_class.team.name }}</a>
+{% extends "skole/base.html" %}
 
-        <hr>
+{% block content %}
+<h1>School Class Details - {{ school_class.name }}</h1>
+<a href="{% url 'team_detail' team_id=school_class.team.id %}">{{ school_class.team.name }}</a>
 
-        <p>Indtægt = {{ school_class.total_school_fee|floatformat }} kr.</p>
-        <p>Udgifter = {{ total_price_for_class }} kr.</p>
-        <p>Overskud = {{ surplus }} kr.</p>
-        <p>Forbrugs % = {{ percentage_used }} %</p>
-        <hr>
-        <!-- Vis klassens lærere -->
-        <h2>Class Teachers:</h2>
-        <ul>
-            {% for teacher in school_class.class_teachers.all %}
-            <li>{{ teacher }}</li>
-            {% endfor %}
-        </ul>
+<hr>
 
-        <!-- Vis lektioner i klassen -->
-        <p>Total antal lektioner i klassen: {{ total_lessons_in_class }}</p>
-        <ul>
-            {% for lesson in school_class.lesson_set.all %}
-            <li>{{ lesson }}</li>
+<p>Indtægt = {{ school_class.total_school_fee|floatformat }} kr.</p>
+<p>Udgifter = {{ total_price_for_class }} kr.</p>
+<p>Overskud = {{ surplus }} kr.</p>
+<p>Forbrugs % = {{ percentage_used }} %</p>
+<hr>
+<!-- Vis klassens lærere -->
+<h2>Class Teachers:</h2>
+<ul>
+    {% for teacher in school_class.class_teachers.all %}
+    <li>{{ teacher }}</li>
+    {% endfor %}
+</ul>
 
-            {% endfor %}
-        </ul>
+<!-- Vis lektioner i klassen -->
+<p>Total antal lektioner i klassen: {{ total_lessons_in_class }}</p>
+<ul>
+    {% for lesson in school_class.lesson_set.all %}
+    <li>{{ lesson }}</li>
 
-        <p>Total number of students: {{ school_class.students.count }} students</p>
+    {% endfor %}
+</ul>
 
-        <table>
-            <thead>
-                <tr>
-                    <td><h2>Student Data</h2></td>
-                    <td><h2>   </h2></td>
-                    <td><h2>Teacher Data</h2></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><table border="1">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Age Number</th>
-                    <th>School Fee Level</th>
-                    <th>School Fee Level Name</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for student in school_class.students.all %}
-                <tr>
-                    <td>{{ student.name }}</td>
-                    <td>{{ student.age_number }}</td>
-                    <td>{{ student.school_fee.level }}</td>
-                    <td>{{ student.school_fee.name }}</td>
-                    <td>{{ student.school_fee.amount|floatformat }} kr.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table><p>Total amount: {{ school_class.total_school_fee }}</p></td>
-    </td><td>   </td>
-                    <td><table border="1">
-                        <thead>
-                            <tr>
-                                <th>Teacher</th>
-                                <th>Employment Category</th>
-                                <th>Total Lessons</th>
-                                <th>Subject</th>
-                                <th>Classroom</th>
-                                <th>Price per Lesson</th>
-                                <th>Total Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for lesson in lessons %}
-                            <tr>
-                                <td>{{ lesson.teacher_name }}</td>
-                                <td>{{ lesson.employment_category }}</td>
-                                <td>{{ lesson.total_lessons_per_teacher }}</td>
-                                <td>{{ lesson.subject }}</td>
-                                <td>{{ lesson.classroom }}</td>
-                                <td>{{ lesson.price_per_lesson }}</td>
-                                <td>{{ lesson.total_price }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-            
-                    <p>Total Price for Class: {{ total_price_for_class }}</p>
-                </td>
-                </tr>
-            </tbody>
-        </table>
+<p>Total number of students: {{ school_class.students.count }} students</p>
+
+<table>
+    <thead>
+        <tr>
+            <td><h2>Student Data</h2></td>
+            <td><h2>   </h2></td>
+            <td><h2>Teacher Data</h2></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><table border="1">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age Number</th>
+            <th>School Fee Level</th>
+            <th>School Fee Level Name</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in school_class.students.all %}
+        <tr>
+            <td>{{ student.name }}</td>
+            <td>{{ student.age_number }}</td>
+            <td>{{ student.school_fee.level }}</td>
+            <td>{{ student.school_fee.name }}</td>
+            <td>{{ student.school_fee.amount|floatformat }} kr.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table><p>Total amount: {{ school_class.total_school_fee }}</p></td>
+</td><td>   </td>
+            <td><table border="1">
+                <thead>
+                    <tr>
+                        <th>Teacher</th>
+                        <th>Employment Category</th>
+                        <th>Total Lessons</th>
+                        <th>Subject</th>
+                        <th>Classroom</th>
+                        <th>Price per Lesson</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lesson in lessons %}
+                    <tr>
+                        <td>{{ lesson.teacher_name }}</td>
+                        <td>{{ lesson.employment_category }}</td>
+                        <td>{{ lesson.total_lessons_per_teacher }}</td>
+                        <td>{{ lesson.subject }}</td>
+                        <td>{{ lesson.classroom }}</td>
+                        <td>{{ lesson.price_per_lesson }}</td>
+                        <td>{{ lesson.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    
+            <p>Total Price for Class: {{ total_price_for_class }}</p>
+        </td>
+        </tr>
+    </tbody>
+</table>
 
 
 
 
 
-        
-        
 
-        <h2>Sum up Data:</h2>
-        <!-- Opsummerende tabel -->
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Personalekategori</th>
-                    <th>Total antal timer</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for category, hours in total_hours %}
-                <tr>
-                    <td>{{ category }}</td>
-                    <td>{{ hours }}</td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td><strong>Sum af total antal timer</strong></td>
-                    <td><strong>{{ total_sum }}</strong></td>
-                </tr>
-            </tbody>
-        </table>
 
-    </body>
-</html>
+
+<h2>Sum up Data:</h2>
+<!-- Opsummerende tabel -->
+<table border="1">
+    <thead>
+        <tr>
+            <th>Personalekategori</th>
+            <th>Total antal timer</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for category, hours in total_hours %}
+        <tr>
+            <td>{{ category }}</td>
+            <td>{{ hours }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td><strong>Sum af total antal timer</strong></td>
+            <td><strong>{{ total_sum }}</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+{% endblock content %}
+

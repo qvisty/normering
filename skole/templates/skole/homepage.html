@@ -1,24 +1,6 @@
-<!DOCTYPE html>
-<html lang="da">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
-</head>
-<body>
-    <h1>Welcome to SchoolClass Dashboard</h1>
-    <h2>School Classes:</h2>
-    <ul>
-        {% for school_class in school_classes %}
-            <li><a href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a></li>
-        {% endfor %}
-    </ul>
-    <hr>
-    <h2>Teams:</h2>
-    <ul>
-        {% for team in teams %}
-        <li><a href="{% url 'team_detail' team_id=team.id %}">{{ team.name }}</a></li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends "skole/base.html" %}
+
+{% block content %}
+<h1>Forside</h1>
+{% endblock content %}
+

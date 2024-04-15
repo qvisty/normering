@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html lang="da">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Team Details</title>
-    </head>
-    <body>
-        <h1>Team Details - {{ team.name }}</h1>
-        <a href="http://127.0.0.1:8000/skoleadmin/" target="_blank">Admin</a> - <a href="{% url 'homepage' %}">Forside</a>
-        <hr>
-        
+{% extends "skole/base.html" %}
+
+{% block content %}
+<h1>Team Details - {{ team.name }}</h1>
         <ul>
         {% for school_class in team.school_classes.all  %}
         <li><a href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a></li>
@@ -71,9 +63,4 @@
 </table>
     <h2>Overskud = {{ total_school_fee_for_team }} - {{ total_price_for_team }} = {{ surplus }}</h2>
     <h2>Forbrugs-%: {{ percentage_used }}</h2>
-
-    <!-- Additional HTML code for displaying other details as needed -->
-
-</body>
-    </body>
-</html>
+{% endblock content %}
