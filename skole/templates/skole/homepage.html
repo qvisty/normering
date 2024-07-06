@@ -2,5 +2,10 @@
 
 {% block content %}
 <h1>Forside</h1>
+
+{% for department in departments %}
+<a href="{% url 'department_detail' department.id %}"><p>{{ department }}</p></a>
+{% endfor %}
+    
 {% endblock content %}
 

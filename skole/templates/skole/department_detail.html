@@ -1,0 +1,9 @@
+{% extends "skole/base.html" %}
+
+{% block content %}
+<h1>Department Details - {{ department.name }}</h1>
+{% for team in teams %}
+    <div>{{ team }}</div>
+{% endfor %}
+    
+{% endblock content %}
