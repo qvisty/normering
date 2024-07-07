@@ -11,6 +11,8 @@ from .models import (
     Department,
 )
 from collections import defaultdict
+from django.utils.formats import localize
+
 from operator import itemgetter
 
 
@@ -237,6 +239,11 @@ def team_detail(request, team_id):
             (total_price_for_team / total_school_fee_for_team) * 100, 1
         )
 
+    # Formatering af tal som DKK
+    total_school_fee_for_team_formatted = f"{total_school_fee_for_team:.0f} DKK"
+    total_price_for_team_formatted = f"{total_price_for_team:.0f} DKK"
+    surplus_formatted = f"{surplus:.0f} DKK"
+
     return render(
         request,
         "skole/team_detail.html",
@@ -248,6 +255,9 @@ def team_detail(request, team_id):
             "total_hours": total_hours_list,
             "total_price_for_team": total_price_for_team,
             "total_school_fee_for_team": total_school_fee_for_team,
+            "total_school_fee_for_team_formatted": total_school_fee_for_team_formatted,
+            "total_price_for_team_formatted": total_price_for_team_formatted,
+            "surplus_formatted": surplus_formatted,
             "surplus": surplus,
             "percentage_used": percentage_used,
         },
