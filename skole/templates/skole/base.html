@@ -12,19 +12,21 @@
         <table>
             <tr>
               <td>Afdeling</td>
-              <td>A B H # todo</td>
+              <td>{% for top_department in all_departments %}
+                <a href="{% url 'department_detail' department_id=top_department.id %}">{{ top_department.name }}</a>
+            {% endfor %}</td>
             </tr>
             <tr>
               <td>Team</td>
-              <td>            {% for team in teams %}
-                <a href="{% url 'team_detail' team_id=team.id %}">{{ team.name }}</a>
+              <td>{% for top_team in all_teams %}
+                <a href="{% url 'team_detail' team_id=top_team.id %}">{{ top_team.name }}</a>
                 {% endfor %}
     </td>
             </tr>
             <tr>
               <td>Klasse</td>
-              <td>{% for school_class in school_classes %}
-                <a href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a>
+              <td>{% for top_school_class in all_school_classes %}
+                <a href="{% url 'school_class_detail' class_id=top_school_class.id %}">{{ top_school_class.name }}</a>
             {% endfor %} </td>
             </tr>
           </table>

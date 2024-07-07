@@ -3,7 +3,11 @@
 {% block content %}
 <h1>Department Details - {{ department.name }}</h1>
 {% for team in teams %}
-    <div>{{ team }}</div>
-{% endfor %}
+<li><a href="{% url 'team_detail' team_id=team.id %}">{{ team }}</a></li>
+<ul>
+    {% for school_class in team.school_classes.all %}
+    <li><a href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a></li>
+    {% endfor %}
+</ul>{% endfor %}
     
 {% endblock content %}

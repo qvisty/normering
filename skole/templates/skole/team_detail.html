@@ -1,7 +1,11 @@
 {% extends "skole/base.html" %}
 
 {% block content %}
-<h1>Team Details - {{ team.name }}</h1>
+<h1>
+    Team Details - 
+    <a href="{% url 'department_detail' team.department.id %}">{{ team.department.name }}</a> 
+    - {{ team.name }}
+  </h1>
         <ul>
         {% for school_class in team.school_classes.all  %}
         <li><a href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a></li>
