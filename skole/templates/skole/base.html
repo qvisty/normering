@@ -1,39 +1,64 @@
-
 <!DOCTYPE html>
 <html lang="da">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-    <body>
-        <a href="http://127.0.0.1:8000/skoleadmin/" target="_blank">Admin</a> - <a href="{% url 'homepage' %}">Forside</a>
-        
-        <table>
-            <tr>
-              <td>Afdeling</td>
-              <td>{% for top_department in all_departments %}
-                <a href="{% url 'department_detail' department_id=top_department.id %}">{{ top_department.name }}</a>
-            {% endfor %}</td>
-            </tr>
-            <tr>
-              <td>Team</td>
-              <td>{% for top_team in all_teams %}
-                <a href="{% url 'team_detail' team_id=top_team.id %}">{{ top_team.name }}</a>
-                {% endfor %}
-    </td>
-            </tr>
-            <tr>
-              <td>Klasse</td>
-              <td>{% for top_school_class in all_school_classes %}
-                <a href="{% url 'school_class_detail' class_id=top_school_class.id %}">{{ top_school_class.name }}</a>
-            {% endfor %} </td>
-            </tr>
-          </table>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Skole</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/skoleadmin/" target="_blank">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'homepage' %}">Forside</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
         <h1>Welcome to SchoolClass Dashboard</h1>
-            <hr>        
-    {% block content %}{% endblock content %}
-    </body>
+
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>Afdeling</th>
+                    <th>Team</th>
+                    <th>Klasse</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        {% for top_department in all_departments %}
+                            <a href="{% url 'department_detail' department_id=top_department.id %}">{{ top_department.name }}</a><br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for top_team in all_teams %}
+                            <a href="{% url 'team_detail' team_id=top_team.id %}">{{ top_team.name }}</a><br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for top_school_class in all_school_classes %}
+                            <a href="{% url 'school_class_detail' class_id=top_school_class.id %}">{{ top_school_class.name }}</a><br>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr>        
+        {% block content %}{% endblock content %}
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
 </html>
-
-
