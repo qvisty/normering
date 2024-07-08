@@ -42,7 +42,7 @@ class Team(models.Model):
     )
 
     def __str__(self):
-        return f"{self.department.name} - {self.name}"
+        return f"{self.name}"
 
     class Meta:
         verbose_name = "Team"
