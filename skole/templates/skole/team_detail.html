@@ -2,16 +2,20 @@
 
 {% block content %}
 <h1>
-    Team Details - 
-    <a href="{% url 'department_detail' team.department.id %}">{{ team.department.name }}</a> 
-    - {{ team.name }}
+    Team: <a href="{% url 'department_detail' team.department.id %}" style="color: inherit; text-decoration: none;">{{ team.department.name }}</a> 
+    - {{ team.name }}   <a class="btn btn-info" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Klasser</a>
   </h1>
-        <ul>
-        {% for school_class in team.school_classes.all  %}
-        <li><a href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a></li>
-        {% endfor %}
-        </ul>
-        <h1>Summary for {{ team.name }}</h1>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                <div class="list-group">
+                    {% for school_class in team.school_classes.all %}
+                    <a href="{% url 'school_class_detail' class_id=school_class.id %}" class="list-group-item list-group-item-action">
+                        {{ school_class.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
 <table border="1">
     <thead>
         <tr>
