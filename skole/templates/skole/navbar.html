@@ -1,7 +1,8 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/">
-        <img src="{% static 'media/skolelogo.png' %}" alt="Logo" class="d-inline-block align-top logo"></a>
+        <img src="{% static 'media/skolelogo.png' %}" alt="Logo" class="d-inline-block align-top logo">
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -13,9 +14,43 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'homepage' %}">Forside</a>
             </li>
+            <!-- Dropdown for Afdelinger -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="afdelingerDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Afdelinger
+                </a>
+                <div class="dropdown-menu" aria-labelledby="afdelingerDropdown">
+                    {% for department in all_departments %}
+                    <a class="dropdown-item" href="{% url 'department_detail' department_id=department.id %}">{{ department.name }}</a>
+                    {% endfor %}
+                </div>
+            </li>
+            <!-- Dropdown for Teams -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="teamsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Teams
+                </a>
+                <div class="dropdown-menu" aria-labelledby="teamsDropdown">
+                    {% for team in all_teams %}
+                    <a class="dropdown-item" href="{% url 'team_detail' team_id=team.id %}">{{team}}</a>
+                    {% endfor %}
+                </div>
+            </li>
+            <!-- Dropdown for Klasser -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="klasserDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Klasser
+                </a>
+                <div class="dropdown-menu" aria-labelledby="klasserDropdown">
+                    {% for school_class in all_school_classes %}
+                    <a class="dropdown-item" href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a>
+                    {% endfor %}
+                </div>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'sliderindex' %}">Sliders</a>
             </li>
         </ul>
     </div>
 </nav>
+<div><h1>Kløver-Skolens Normerings-Dashboard</h1></div>

@@ -1,41 +1,54 @@
 {% extends "skole/base.html" %}
 
 {% block content %}
-<h1>School Class Details - {{ school_class.name }}</h1>
-<a href="{% url 'team_detail' team_id=school_class.team.id %}">{{ school_class.team.name }}</a>
+<a href="{% url 'homepage' %}">Kløver-Skolen
+</a> > 
+<a href="{% url 'department_detail' department_id=school_class.team.department.id %}">{{ school_class.team.department.name }}
+</a> > 
+<a href="{% url 'team_detail' team_id=school_class.team.id %}">{{ school_class.team.name }}</a> > 
+{{ school_class }}
+<h1>{{ school_class.name }}</h1>
 
 <hr>
-
-<p>Indtægt = {{ school_class.total_school_fee|floatformat }} kr.</p>
-<p>Udgifter = {{ total_price_for_class }} kr.</p>
-<p>Overskud = {{ surplus }} kr.</p>
-<p>Forbrugs % = {{ percentage_used }} %</p>
-<hr>
-<!-- Vis klassens lærere -->
-<h2>Class Teachers:</h2>
-<ul>
-    {% for teacher in school_class.class_teachers.all %}
-    <li>{{ teacher }}</li>
-    {% endfor %}
-</ul>
-
-<!-- Vis lektioner i klassen -->
-<p>Total antal lektioner i klassen: {{ total_lessons_in_class }}</p>
-<ul>
-    {% for lesson in school_class.lesson_set.all %}
-    <li>{{ lesson }}</li>
-
-    {% endfor %}
-</ul>
-
-<p>Total number of students: {{ school_class.students.count }} students</p>
+<div
+    class="table-responsive"
+>
+    <table
+        class="table table-primary"
+    >
+        <thead>
+            <tr>
+                <th scope="col">Økonomi</th>
+                <th scope="col">Personer / Lektioner</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="">
+                <td scope="row">Indtægt = {{ school_class.total_school_fee|floatformat }} kr.</td>
+                <td>Lektioner: {{ total_lessons_in_class }}</td>
+            </tr>
+            <tr class="">
+                <td scope="row">Udgifter = {{ total_price_for_class }} kr.</td>
+                <td>Elever: {{ school_class.students.count }}</td>
+            </tr>
+            <tr class="">
+                <td scope="row">Overskud = {{ surplus }} kr.</td>
+                <td></td>
+            </tr>
+            <tr class="">
+                <td scope="row">Forbrugs % = {{ percentage_used }} %</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <table>
     <thead>
         <tr>
-            <td><h2>Student Data</h2></td>
+            <td><h2>Elever</h2></td>
             <td><h2>   </h2></td>
-            <td><h2>Teacher Data</h2></td>
+            <td><h2>Personale</h2></td>
         </tr>
     </thead>
     <tbody>
@@ -43,11 +56,11 @@
             <td><table border="1">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Age Number</th>
-            <th>School Fee Level</th>
-            <th>School Fee Level Name</th>
-            <th>Amount</th>
+            <th>Navn</th>
+            <th>Alder</th>
+            <th>Takst</th>
+            <th>Tildeling</th>
+            <th>Beløb</th>
         </tr>
     </thead>
     <tbody>
@@ -61,18 +74,18 @@
         </tr>
         {% endfor %}
     </tbody>
-</table><p>Total amount: {{ school_class.total_school_fee }}</p></td>
+</table><p>Samlet tildeling: {{ school_class.total_school_fee }} kr.</p></td>
 </td><td>   </td>
             <td><table border="1">
                 <thead>
                     <tr>
-                        <th>Teacher</th>
-                        <th>Employment Category</th>
-                        <th>Total Lessons</th>
-                        <th>Subject</th>
-                        <th>Classroom</th>
-                        <th>Price per Lesson</th>
-                        <th>Total Price</th>
+                        <th>Personale</th>
+                        <th>Kategori</th>
+                        <th>Lektioner</th>
+                        <th>Fag</th>
+                        <th>Lokale</th>
+                        <th>Beløb pr. lektion</th>
+                        <th>Beløb samlet</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,14 +109,7 @@
     </tbody>
 </table>
 
-
-
-
-
-
-
-
-<h2>Sum up Data:</h2>
+<h2>Samlet Data:</h2>
 <!-- Opsummerende tabel -->
 <table border="1">
     <thead>

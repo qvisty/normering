@@ -1,20 +1,33 @@
 {% extends "skole/base.html" %}
 
 {% block content %}
-<h1>Forside</h1>
-
-{% for department in departments %}
-<a href="{% url 'department_detail' department.id %}"><p>{{ department }}</p></a>
-<ul>    
-    {% for team in department.teams.all %}
-    <li><a href="{% url 'team_detail' team_id=team.id %}">{{ team }}</a></li>
-    <ul>
-        {% for school_class in team.school_classes.all %}
-        <li><a href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a></li>
-        {% endfor %}
-    </ul>
-    {% endfor %}
-</ul>
-{% endfor %}
+<table class="table table-bordered mt-4">
+    <thead>
+        <tr>
+            <th>Afdeling</th>
+            <th>Team</th>
+            <th>Klasse</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                {% for top_department in all_departments %}
+                    <a href="{% url 'department_detail' department_id=top_department.id %}">{{ top_department.name }}</a><br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for top_team in all_teams %}
+                    <a href="{% url 'team_detail' team_id=top_team.id %}">{{ top_team.name }}</a><br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for top_school_class in all_school_classes %}
+                    <a href="{% url 'school_class_detail' class_id=top_school_class.id %}">{{ top_school_class.name }}</a><br>
+                {% endfor %}
+            </td>
+        </tr>
+    </tbody>
+</table>
     
 {% endblock content %}

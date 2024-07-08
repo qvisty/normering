@@ -1,74 +1,85 @@
 {% extends "skole/base.html" %}
 
 {% block content %}
-<h1>
-    Team: <a href="{% url 'department_detail' team.department.id %}" style="color: inherit; text-decoration: none;">{{ team.department.name }}</a> 
-    - {{ team.name }}   <a class="btn btn-info" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Klasser</a>
+<div>
+    <a href="{% url 'homepage' %}">Kløver-Skolen
+    </a> > <a href="{% url 'department_detail' department_id=team.department.id %}">{{ team.department.name }}
+    </a> > {{ team.name }}
+    <h1>
+    Team: 
+    <a href="{% url 'department_detail' team.department.id %}" style="color: inherit; text-decoration: none;">{{ team.department.name }}
+    </a> 
+    - {{ team.name }}   
+    <a class="btn btn-info" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Klasser
+    </a>
   </h1>
-        <div class="collapse" id="collapseExample">
-            <div class="card card-body">
-                <div class="list-group">
-                    {% for school_class in team.school_classes.all %}
-                    <a href="{% url 'school_class_detail' class_id=school_class.id %}" class="list-group-item list-group-item-action">
-                        {{ school_class.name }}
-                    </a>
-                    {% endfor %}
-                </div>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            <div class="list-group">
+                {% for school_class in team.school_classes.all %}
+                <a href="{% url 'school_class_detail' class_id=school_class.id %}" class="list-group-item list-group-item-action">
+                    {{ school_class.name }}
+                </a>
+                {% endfor %}
             </div>
         </div>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Klasse</th>
-            <th>Antal elever</th>
-            <th>Sum af Elev Level</th>
-            <th>Sum af Elev Beløb</th>
-            <th>Lektioner i klassen</th>
-            <th>Personaletyper</th>
-            <th>Lønforbrug</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for data in summary_data %}
+    </div>
+</div>
+<div>
+    <table class="table table-bordered mt-4">
+        <thead>
             <tr>
-                <td>{{ data.class_name }}</td>
-                <td>{{ data.num_students }}</td>
-                <td>{{ data.sum_school_fee_amount }}</td>
-                <td>{{ data.sum_school_fee }}</td>
-                <td>{{ data.num_lessons }}</td>
-                <td>
-                   
-                    <ul>
-                   {% for cat, hours in data.class_data.items %}
-                   <li>
-                    {{ cat }}: {{ hours }} timer
-                </li>
-                   {% endfor %}
-                </ul>
-                    
-                </td>
-                <td>0 kroner #TODO</td>
-                    
+                <th>Klasse</th>
+                <th>Antal elever</th>
+                <th>Sum af Elev Level</th>
+                <th>Sum af Elev Beløb</th>
+                <th>Lektioner i klassen</th>
+                <th>Personaletyper</th>
+                <th>Lønforbrug</th>
             </tr>
-        {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr>
-          <td>I alt</td>
-          <td>{{ totals.num_students }}</td>
-          <td>{{ totals.school_fee_amount }}</td>
-          <td>{{ totals.school_fee }}</td>
-          <td>{{ totals.num_lessons }}</td>
-          <td><ul>
-            {% for category, hours in total_hours %}
-                <li>{{ category }}: {{ hours }}</li>
+        </thead>
+        <tbody>
+            {% for data in summary_data %}
+                <tr>
+                    <td>{{ data.class_name }}</td>
+                    <td>{{ data.num_students }}</td>
+                    <td>{{ data.sum_school_fee_amount }}</td>
+                    <td>{{ data.sum_school_fee }}</td>
+                    <td>{{ data.num_lessons }}</td>
+                    <td>
+                        <ul class="list-unstyled">
+                            {% for cat, hours in data.class_data.items %}
+                                <li>{{ cat }}: {{ hours }} timer</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>0 kroner <!-- TODO: Calculate actual amount --></td>
+                </tr>
             {% endfor %}
-        </ul></td>
-        <td>{{ total_price_for_team }}</td>
-
-        </tr>
-      </tfoot>
-</table>
+        </tbody>
+        <tfoot>
+            <tr class="table-secondary">
+                <td>I alt</td>
+                <td>{{ totals.num_students }}</td>
+                <td>{{ totals.school_fee_amount }}</td>
+                <td>{{ totals.school_fee }}</td>
+                <td>{{ totals.num_lessons }}</td>
+                <td>
+                    <ul class="list-unstyled">
+                        {% for category, hours in total_hours %}
+                            <li>{{ category }}: {{ hours }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>{{ total_price_for_team }}</td>
+            </tr>
+        </tfoot>
+    </table>
+    
+<br>
+</div>
+<div>
     <h2>Overskud = {{ total_school_fee_for_team_formatted }} - {{ total_price_for_team_formatted }} = {{ surplus_formatted }}</h2>
     <h2>Forbrugs-%: {{ percentage_used }}</h2>
+</div>
 {% endblock content %}
