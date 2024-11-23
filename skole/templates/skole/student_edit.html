@@ -1,0 +1,38 @@
+{% extends "skole/base.html" %}
+
+{% block content %}
+<a href="{% url 'homepage' %}">Kløver-Skolen</a> > 
+<a href="{% url 'department_detail' department_id=student.schoolclass.team.department.id %}">
+    {{ student.schoolclass.team.department.name }}
+</a> > 
+<a href="{% url 'team_detail' team_id=student.schoolclass.team.id %}">
+    {{ student.schoolclass.team.name }}
+</a> > 
+<a href="{% url 'schoolclass_detail' class_id=student.schoolclass.id %}">
+    {{ student.schoolclass.name }}
+</a>
+
+<h1>{{ student.name }}</h1>
+<hr>
+
+<a href="{% url 'schoolclass_detail' class_id=student.schoolclass.pk %}">
+    ← Tilbage til klassens side
+</a>
+
+<h1>Rediger elev: {{ student.name }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Gem</button>
+</form>
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% endblock content %}

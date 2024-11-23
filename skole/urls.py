@@ -22,6 +22,9 @@ urlpatterns = [
         views.department_detail,
         name="department_detail",
     ),
+    # Student
+    path('student/<int:pk>/edit/', views.student_edit, name='student_edit'),
+
     # home
     path("", views.homepage, name="homepage"),
 ]

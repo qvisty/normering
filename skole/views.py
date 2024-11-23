@@ -4,15 +4,13 @@ from django.contrib import messages
 from django.db.models import CharField, Count, F, Prefetch, Sum, Value
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.formats import localize
 
-from .forms import SchoolClassForm
+from .forms import SchoolClassForm, StudentForm
 from .models import (
     Department,
     EmploymentCategory,
     Lesson,
     SchoolClass,
-    SchoolFee,
     Staff,
     Student,
     Team,
@@ -284,5 +282,31 @@ def department_detail(request, department_id):
         {
             "department": department,
             "teams": department.teams.all(),  # Already prefetched
+        },
+    )
+
+
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import StudentForm
+from .models import Student
+
+
+def student_edit(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    if request.method == "POST":
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            return redirect("schoolclass_detail", class_id=student.schoolclass.pk)
+    else:
+        form = StudentForm(instance=student)
+
+    return render(
+        request,
+        "skole/student_edit.html",
+        {
+            "form": form,
+            "student": student,
         },
     )
