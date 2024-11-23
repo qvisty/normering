@@ -42,8 +42,8 @@
                     Klasser
                 </a>
                 <div class="dropdown-menu" aria-labelledby="klasserDropdown">
-                    {% for school_class in all_school_classes %}
-                    <a class="dropdown-item" href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a>
+                    {% for schoolclass in all_schoolclasses %}
+                    <a class="dropdown-item" href="{% url 'schoolclass_detail' class_id=schoolclass.id %}">{{ schoolclass.name }}</a>
                     {% endfor %}
                 </div>
             </li>
@@ -53,4 +53,4 @@
         </ul>
     </div>
 </nav>
-<div><h1>Kløver-Skolens Normerings-Dashboard</h1></div>
+<div><h2>Kløver-Skolens Normerings-Dashboard</h2></div>

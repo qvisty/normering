@@ -18,8 +18,8 @@
                 <tr>
                     <td class="w-25"><a href="{% url 'team_detail' team_id=team.id %}">{{ team.name }}</a></td>
                     <td class="w-25">
-                        {% for school_class in team.school_classes.all %}
-                            <a href="{% url 'school_class_detail' class_id=school_class.id %}">{{ school_class.name }}</a><br>
+                        {% for schoolclass in team.schoolclasses.all %}
+                            <a href="{% url 'schoolclass_detail' class_id=schoolclass.id %}">{{ schoolclass.name }}</a><br>
                         {% endfor %}
                     </td>
                 </tr>

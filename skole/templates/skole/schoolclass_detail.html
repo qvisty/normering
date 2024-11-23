@@ -1,117 +1,114 @@
 {% extends "skole/base.html" %}
 
 {% block content %}
-<a href="{% url 'homepage' %}">Kløver-Skolen
-</a> > 
-<a href="{% url 'department_detail' department_id=school_class.team.department.id %}">{{ school_class.team.department.name }}
-</a> > 
-<a href="{% url 'team_detail' team_id=school_class.team.id %}">{{ school_class.team.name }}</a> > 
-{{ school_class }}
-<h1>{{ school_class.name }}</h1>
+<a href="{% url 'homepage' %}">Kløver-Skolen</a> > 
+<a href="{% url 'department_detail' department_id=schoolclass.team.department.id %}">{{ schoolclass.team.department.name }}</a> > 
+<a href="{% url 'team_detail' team_id=schoolclass.team.id %}">{{ schoolclass.team.name }}</a> > 
+{{ schoolclass }}
 
+<h1>{{ schoolclass.name }}</h1>
+<a href="{% url 'schoolclass_edit' class_id=schoolclass.pk %}" class="btn btn-warning">Rediger klasse</a>
 <hr>
-<div
-    class="table-responsive"
->
-    <table
-        class="table table-primary"
-    >
+
+<!-- Økonomi og Lektioner -->
+<div class="table-responsive">
+    <table class="table table-primary">
         <thead>
             <tr>
-                <th scope="col">Økonomi</th>
-                <th scope="col">Personer / Lektioner</th>
+                <th>Økonomi</th>
+                <th>Personer / Lektioner</th>
             </tr>
         </thead>
         <tbody>
-            <tr class="">
-                <td scope="row">Indtægt = {{ school_class.total_school_fee|floatformat }} kr.</td>
+            <tr>
+                <td>Indtægt = {{ schoolclass.total_school_fee|floatformat }} kr.</td>
                 <td>Lektioner: {{ total_lessons_in_class }}</td>
             </tr>
-            <tr class="">
-                <td scope="row">Udgifter = {{ total_price_for_class }} kr.</td>
-                <td>Elever: {{ school_class.students.count }}</td>
+            <tr>
+                <td>Udgifter = {{ total_price_for_class }} kr.</td>
+                <td>Elever: {{ schoolclass.students.count }}</td>
             </tr>
-            <tr class="">
-                <td scope="row">Overskud = {{ surplus }} kr.</td>
+            <tr>
+                <td>Overskud = {{ surplus }} kr.</td>
                 <td></td>
             </tr>
-            <tr class="">
-                <td scope="row">Forbrugs % = {{ percentage_used }} %</td>
+            <tr>
+                <td>Forbrugs % = {{ percentage_used }} %</td>
                 <td></td>
             </tr>
         </tbody>
     </table>
 </div>
 
-<table>
-    <thead>
-        <tr>
-            <td><h2>Elever</h2></td>
-            <td><h2>   </h2></td>
-            <td><h2>Personale</h2></td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><table border="1">
-    <thead>
-        <tr>
-            <th>Navn</th>
-            <th>Alder</th>
-            <th>Takst</th>
-            <th>Tildeling</th>
-            <th>Beløb</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for student in school_class.students.all %}
-        <tr>
-            <td>{{ student.name }}</td>
-            <td>{{ student.age_number }}</td>
-            <td>{{ student.school_fee.level }}</td>
-            <td>{{ student.school_fee.name }}</td>
-            <td>{{ student.school_fee.amount|floatformat }} kr.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table><p>Samlet tildeling: {{ school_class.total_school_fee }} kr.</p></td>
-</td><td>   </td>
-            <td><table border="1">
-                <thead>
-                    <tr>
-                        <th>Personale</th>
-                        <th>Kategori</th>
-                        <th>Lektioner</th>
-                        <th>Fag</th>
-                        <th>Lokale</th>
-                        <th>Beløb pr. lektion</th>
-                        <th>Beløb samlet</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for lesson in lessons %}
-                    <tr>
-                        <td>{{ lesson.teacher_name }}</td>
-                        <td>{{ lesson.employment_category }}</td>
-                        <td>{{ lesson.total_lessons_per_teacher }}</td>
-                        <td>{{ lesson.subject }}</td>
-                        <td>{{ lesson.classroom }}</td>
-                        <td>{{ lesson.price_per_lesson }}</td>
-                        <td>{{ lesson.total_price }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-    
-            <p>Total Price for Class: {{ total_price_for_class }}</p>
-        </td>
-        </tr>
-    </tbody>
-</table>
+<hr>
 
+<!-- Elever -->
+<div class="table-responsive">
+    <h2>Elever</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Navn</th>
+                <th>Klassetrin</th>
+                <th>Takst</th>
+                <th>Tildeling</th>
+                <th>Beløb</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in schoolclass.students.all %}
+            <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ student.age_number }}</td>
+                <td>{{ student.school_fee.level }}</td>
+                <td>{{ student.school_fee.name }}</td>
+                <td>{{ student.school_fee.amount|floatformat }} kr.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p>Samlet tildeling: {{ schoolclass.total_school_fee }} kr.</p>
+</div>
+
+<hr>
+
+<!-- Personale -->
+<div class="table-responsive">
+    <h2>Personale</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Personale</th>
+                <th>Kategori</th>
+                <th>Lektioner</th>
+                <th>Fag</th>
+                <th>Lokale</th>
+                <th>Beløb pr. lektion</th>
+                <th>Beløb samlet</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in lessons %}
+            <tr>
+                <td>{{ lesson.teacher_name }}</td>
+                <td>{{ lesson.employment_category }}</td>
+                <td>{{ lesson.total_lessons_per_teacher }}</td>
+                <td>{{ lesson.subject }}</td>
+                <td>{{ lesson.classroom }}</td>
+                <td>{{ lesson.price_per_lesson|floatformat }} kr.</td>
+                <td>{{ lesson.total_price|floatformat }} kr.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p>Total Price for Class: {{ total_price_for_class }} kr.</p>
+</div>
+
+<hr>
+
+<!-- Samlet Data -->
 <h2>Samlet Data:</h2>
-<!-- Opsummerende tabel -->
-<table border="1">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>Personalekategori</th>
@@ -133,4 +130,3 @@
 </table>
 
 {% endblock content %}
-

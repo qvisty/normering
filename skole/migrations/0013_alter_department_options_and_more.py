@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
         migrations.AlterModelOptions(
             name="lesson",
             options={
-                "ordering": ["school_class__name", "subject", "classroom"],
+                "ordering": ["schoolclass__name", "subject", "classroom"],
                 "verbose_name": "Lektion",
                 "verbose_name_plural": "Lektioner",
             },

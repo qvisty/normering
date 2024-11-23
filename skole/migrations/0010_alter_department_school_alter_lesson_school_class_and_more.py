@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='lesson',
-            name='school_class',
+            name='schoolclass',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='lessons', to='skole.schoolclass'),
         ),
         migrations.AlterField(
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='schoolclass',
             name='team',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='school_classes', to='skole.team'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='schoolclasses', to='skole.team'),
         ),
         migrations.AlterField(
             model_name='staff',
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='student',
-            name='school_class',
+            name='schoolclass',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='students', to='skole.schoolclass'),
         ),
         migrations.AlterField(

@@ -16,9 +16,9 @@
     <div class="collapse" id="collapseExample">
         <div class="card card-body">
             <div class="list-group">
-                {% for school_class in team.school_classes.all %}
-                <a href="{% url 'school_class_detail' class_id=school_class.id %}" class="list-group-item list-group-item-action">
-                    {{ school_class.name }}
+                {% for schoolclass in team.schoolclasses.all %}
+                <a href="{% url 'schoolclass_detail' class_id=schoolclass.id %}" class="list-group-item list-group-item-action">
+                    {{ schoolclass.name }}
                 </a>
                 {% endfor %}
             </div>

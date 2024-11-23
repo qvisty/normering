@@ -1,11 +1,11 @@
-from collections import defaultdict
-from django.db import models
-from datetime import datetime
-from django.utils.timesince import timesince
-from .managers import SchoolClassManager
-
-
 import re
+from collections import defaultdict
+from datetime import datetime
+
+from django.db import models
+from django.utils.timesince import timesince
+
+from .managers import SchoolClassManager
 
 
 class School(models.Model):
@@ -75,11 +75,11 @@ class Staff(models.Model):
         return self.name
 
     @classmethod
-    def total_lessons_taught_in_class(cls, school_class):
+    def total_lessons_taught_in_class(cls, schoolclass):
         """
         Beregn det samlede antal lektioner, alle medarbejdere i denne kategori har undervist i en bestemt klasse.
         """
-        return cls.objects.filter(taught_lessons__school_class=school_class).count()
+        return cls.objects.filter(taught_lessons__schoolclass=schoolclass).count()
 
     class Meta:
         verbose_name = "Ansat"
@@ -103,7 +103,7 @@ class SchoolClass(models.Model):
 
     name = models.CharField(max_length=100)
     team = models.ForeignKey(
-        Team, on_delete=models.CASCADE, related_name="school_classes"
+        Team, on_delete=models.CASCADE, related_name="schoolclasses"
     )
     class_teachers = models.ManyToManyField(
         Staff, related_name="class_teachers", blank=True
@@ -141,7 +141,7 @@ class StudentInSchoolManager(models.Manager):
         return (
             super()
             .get_queryset()
-            .filter(school_class__team__department__school__isnull=False)
+            .filter(schoolclass__team__department__school__isnull=False)
         )
 
     def __str__(self):
@@ -150,11 +150,11 @@ class StudentInSchoolManager(models.Manager):
 
 class StudentInSchoolClassManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(school_class__isnull=False)
+        return super().get_queryset().filter(schoolclass__isnull=False)
 
 
 class Lesson(models.Model):
-    school_class = models.ForeignKey(
+    schoolclass = models.ForeignKey(
         SchoolClass, on_delete=models.CASCADE, related_name="lessons"
     )
     subject = models.CharField(max_length=100)  # fag
@@ -163,12 +163,12 @@ class Lesson(models.Model):
 
     def __str__(self):
         teachers_names = ", ".join([teacher.name for teacher in self.teachers.all()])
-        return f"{self.school_class.name} har {self.subject} i {self.classroom}-lokalet med {teachers_names}"
+        return f"{self.schoolclass.name} har {self.subject} i {self.classroom}-lokalet med {teachers_names}"
 
     class Meta:
         verbose_name = "Lektion"
         verbose_name_plural = "Lektioner"
-        ordering = ["school_class__name", "subject", "classroom"]
+        ordering = ["schoolclass__name", "subject", "classroom"]
 
 
 class SchoolFee(models.Model):
@@ -188,7 +188,7 @@ class SchoolFee(models.Model):
 
 class Student(models.Model):
     name = models.CharField(max_length=100, help_text="Elevens fulde navn")
-    school_class = models.ForeignKey(
+    schoolclass = models.ForeignKey(
         SchoolClass,
         on_delete=models.CASCADE,
         related_name="students",
@@ -211,7 +211,7 @@ class Student(models.Model):
 
     objects = models.Manager()  # Standard manager
     in_school = StudentInSchoolManager()
-    in_school_class = StudentInSchoolClassManager()
+    in_schoolclass = StudentInSchoolClassManager()
 
     def save(self, *args, **kwargs):
         if self.school_fee is None:

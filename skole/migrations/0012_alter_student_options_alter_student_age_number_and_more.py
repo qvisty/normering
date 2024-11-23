@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name="student",
-            name="school_class",
+            name="schoolclass",
             field=models.ForeignKey(
                 help_text="Vælg den klasse, som eleven tilhører",
                 on_delete=django.db.models.deletion.CASCADE,

@@ -22,8 +22,8 @@
                 {% endfor %}
             </td>
             <td>
-                {% for top_school_class in all_school_classes %}
-                    <a href="{% url 'school_class_detail' class_id=top_school_class.id %}">{{ top_school_class.name }}</a><br>
+                {% for top_schoolclass in all_schoolclasses %}
+                    <a href="{% url 'schoolclass_detail' class_id=top_schoolclass.id %}">{{ top_schoolclass.name }}</a><br>
                 {% endfor %}
             </td>
         </tr>

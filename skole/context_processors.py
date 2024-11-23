@@ -13,7 +13,7 @@ def global_context(request):
         "department__name", "name"
     )  # Sorter teams efter afdeling og derefter alfabetisk indenfor afdeling
 
-    all_school_classes = SchoolClass.objects.annotate(
+    all_schoolclasses = SchoolClass.objects.annotate(
         class_number=Cast(
             Case(When(name__regex=r"^\d+", then=F("name")), default=Value("0")),
             IntegerField(),
@@ -24,5 +24,5 @@ def global_context(request):
         "all_schools": all_schools,
         "all_departments": all_departments,
         "all_teams": all_teams,
-        "all_school_classes": all_school_classes,
+        "all_schoolclasses": all_schoolclasses,
     }
