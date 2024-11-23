@@ -1,5 +1,4 @@
 from django.urls import path
-from neapolitan.views import CRUDView
 
 from . import views
 

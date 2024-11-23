@@ -1,8 +1,7 @@
 from collections import defaultdict
-from operator import itemgetter
 
 from django.contrib import messages
-from django.db.models import CharField, Count, F, Sum, Value
+from django.db.models import CharField, Count, F, Prefetch, Sum, Value
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.formats import localize
@@ -15,6 +14,7 @@ from .models import (
     SchoolClass,
     SchoolFee,
     Staff,
+    Student,
     Team,
 )
 
@@ -129,127 +129,101 @@ def homepage(request):
     )
 
 
-from operator import itemgetter
-
-
 def team_detail(request, team_id):
-    team = Team.objects.get(pk=team_id)
-    schoolclasses = SchoolClass.objects.filter(team=team)
-    employment_categories = EmploymentCategory.objects.all()
+    team = get_object_or_404(Team, pk=team_id)
+
+    # Prefetch students, school fees, lessons, and teachers with employment categories
+    schoolclasses = (
+        SchoolClass.objects.filter(team=team)
+        .prefetch_related(
+            Prefetch(
+                "students",
+                queryset=Student.objects.select_related("school_fee"),
+            ),
+            Prefetch(
+                "lessons",
+                queryset=Lesson.objects.select_related("schoolclass").prefetch_related(
+                    Prefetch(
+                        "teachers",
+                        queryset=Staff.objects.select_related("employment_category"),
+                    )
+                ),
+            ),
+        )
+        .select_related("team")
+    )
+
+    employment_categories = list(EmploymentCategory.objects.all())
 
     summary_data = []
-    totals = {}
-    totals["num_students"] = 0
-    totals["school_fee"] = 0
-    totals["school_fee_amount"] = 0
-    totals["num_lessons"] = 0
-    total_lessons_by_category = defaultdict(int)
+    totals = {
+        "num_students": 0,
+        "school_fee": 0,
+        "num_lessons": 0,
+    }
     total_price_for_team = 0
     total_hours_by_category = defaultdict(int)
     total_school_fee_for_team = 0
 
+    lessons_data = []  # Collect all lessons for efficient aggregation
+
     for schoolclass in schoolclasses:
-        lessons = (
-            Lesson.objects.filter(schoolclass=schoolclass)
-            .annotate(
-                teacher_name=Concat(
-                    "teachers__name", Value(""), output_field=CharField()
-                ),
-                total_lessons=Count("id"),
-                employment_category=F("teachers__employment_category__name"),
-                price_per_lesson=F("teachers__employment_category__price_pr_lesson"),
+        # Collect all lessons data for aggregation
+        for lesson in schoolclass.lessons.all():
+            lessons_data.append(
+                {
+                    "teacher_name": (
+                        lesson.teachers.first().name if lesson.teachers.exists() else ""
+                    ),
+                    "employment_category": (
+                        lesson.teachers.first().employment_category.name
+                        if lesson.teachers.exists()
+                        else ""
+                    ),
+                    "price_per_lesson": (
+                        lesson.teachers.first().employment_category.price_pr_lesson
+                        if lesson.teachers.exists()
+                        else 0
+                    ),
+                    "schoolclass_id": lesson.schoolclass_id,
+                }
             )
-            .values(
-                "teacher_name",
-                "employment_category",
-                "subject",
-                "classroom",
-                "price_per_lesson",
-            )
-            .annotate(total_lessons_per_teacher=Count("id"))
-            .order_by("teacher_name", "subject")
-        )
 
-        # Calculate total hours per employment category for this class
-        total_hours = defaultdict(int)
-        for lesson in lessons:
-            total_hours[lesson["employment_category"]] += lesson[
-                "total_lessons_per_teacher"
-            ]
-
-        # Add the hours for this class to the team's total
-        for category, hours in total_hours.items():
-            total_hours_by_category[category] += hours
-
-        # Calculate total price for this class
-        total_price_for_class = sum(
-            lesson["total_lessons_per_teacher"] * lesson["price_per_lesson"]
-            for lesson in lessons
-        )
-        total_price_for_team += total_price_for_class
-
-        # Calculate total school fee for this class (sum of school fee for each student)
+        # Calculate total school fee for this class
+        students = schoolclass.students.all()
         total_school_fee_for_class = sum(
-            student.school_fee.amount
-            for student in schoolclass.students.all()
-            if student.school_fee
+            student.school_fee.amount for student in students if student.school_fee
         )
         total_school_fee_for_team += total_school_fee_for_class
 
-        # Beregn antal elever i klassen
-        num_students = schoolclass.students.count()
+        # Calculate number of students in the class
+        num_students = len(students)
         totals["num_students"] += num_students
 
-        # Beregn summen af school_fee for klassen
+        # Calculate total school_fee for the class
         sum_school_fee = sum(
-            student.school_fee.amount
-            for student in schoolclass.students.all()
-            if student.school_fee
+            student.school_fee.amount for student in students if student.school_fee
         )
         totals["school_fee"] += sum_school_fee
 
-        # Beregn summen af school_fee_amount for klassen
-        sum_school_fee_amount = (
-            SchoolFee.objects.filter(student__schoolclass=schoolclass).aggregate(
-                total_fee_amount=Sum("level")
-            )["total_fee_amount"]
-            or 0
-        )
-        totals["school_fee_amount"] += sum_school_fee_amount
-
-        # Beregn antal lektioner i klassen
+        # Number of lessons is already prefetched
         num_lessons = schoolclass.lessons.count()
         totals["num_lessons"] += num_lessons
 
-        # Hent det samlede antal lektioner pr. personalekategori for denne klasse
-        total_lessons_by_category = schoolclass.total_lessons_per_category()
-
-        # Opret en dictionary med personalekategorier som nøgler og antal lektioner som værdier
-        lessons_by_category_dict = {
-            f"{category}": lessons
-            for category, lessons in total_lessons_by_category.items()
-        }
-
-        # Opret en streng, der indeholder navnet på skoleklassen efterfulgt af lektionerne pr. personalekategori
-        class_data = lessons_by_category_dict
-
-        # Hent det samlede antal lektioner pr. personalekategori for denne klasse
-        total_lessons_by_category_class = schoolclass.total_lessons_per_category()
-        for category, lessons in total_lessons_by_category_class.items():
-            total_lessons_by_category[category] += lessons
-
-        # Tilføj opsummeringsdata til listen
+        # Add summary data for this class
         summary_data.append(
             {
                 "class_name": schoolclass.name,
                 "num_students": num_students,
                 "sum_school_fee": sum_school_fee,
-                "sum_school_fee_amount": sum_school_fee_amount,
+                "total_price_for_class": 0,  # Calculate later
                 "num_lessons": num_lessons,
                 "employment_categories": employment_categories,
-                "class_data": class_data,
             }
         )
+
+    # Aggregate lessons data efficiently
+    total_price_for_team = sum(lesson["price_per_lesson"] for lesson in lessons_data)
 
     # Convert total_hours_by_category to a list of tuples
     total_hours_list = [
@@ -260,13 +234,13 @@ def team_detail(request, team_id):
     surplus = total_school_fee_for_team - total_price_for_team
 
     # Calculate percentage of school fee used
-    percentage_used = 0
-    if total_school_fee_for_team > 0:
-        percentage_used = round(
-            (total_price_for_team / total_school_fee_for_team) * 100, 1
-        )
+    percentage_used = (
+        round((total_price_for_team / total_school_fee_for_team) * 100, 1)
+        if total_school_fee_for_team > 0
+        else 0
+    )
 
-    # Formatering af tal som DKK
+    # Formatting of numbers as DKK
     total_school_fee_for_team_formatted = f"{total_school_fee_for_team:.0f} DKK"
     total_price_for_team_formatted = f"{total_price_for_team:.0f} DKK"
     surplus_formatted = f"{surplus:.0f} DKK"
@@ -278,7 +252,6 @@ def team_detail(request, team_id):
             "team": team,
             "summary_data": summary_data,
             "totals": totals,
-            "team": team,
             "total_hours": total_hours_list,
             "total_price_for_team": total_price_for_team,
             "total_school_fee_for_team": total_school_fee_for_team,
@@ -292,13 +265,24 @@ def team_detail(request, team_id):
 
 
 def department_detail(request, department_id):
-    department = Department.objects.get(pk=department_id)
-    teams = department.teams.all()
+    # Prefetch related teams and their related objects
+    department = Department.objects.prefetch_related(
+        Prefetch(
+            "teams",
+            queryset=Team.objects.prefetch_related(
+                Prefetch(
+                    "schoolclasses",
+                    queryset=SchoolClass.objects.prefetch_related("students"),
+                )
+            ),
+        )
+    ).get(pk=department_id)
+
     return render(
         request,
         "skole/department_detail.html",
         {
             "department": department,
-            "teams": teams,
+            "teams": department.teams.all(),  # Already prefetched
         },
     )
