@@ -1,0 +1,11 @@
+{% extends "skole/base.html" %}
+
+{% block content %}
+<h1>Rediger {{ view.model._meta.verbose_name }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Gem</button>
+</form>
+<a href="{% url view.success_url %}" class="btn btn-secondary mt-2">Annuller</a>
+{% endblock %}

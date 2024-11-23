@@ -10,8 +10,12 @@
 </a> > 
 {{ schoolclass }}
 
-<h1>{{ schoolclass.name }}</h1>
-<a href="{% url 'schoolclass_edit' class_id=schoolclass.pk %}" class="btn btn-warning">Rediger klasse</a>
+<table>
+    <td><h1>{{ schoolclass.name }}</h1></td>
+    <td><a href="{% url 'schoolclass_edit' class_id=schoolclass.pk %}" class="btn btn-warning">Rediger klasse</a></td>
+</table>
+
+
 <hr>
 
 <!-- Økonomi og Lektioner -->

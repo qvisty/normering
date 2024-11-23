@@ -4,13 +4,28 @@ from django.contrib import messages
 from django.db.models import CharField, Count, F, Prefetch, Sum, Value
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, UpdateView
 
-from .forms import SchoolClassForm, StudentForm
+from .forms import (
+    DepartmentForm,
+    EmploymentCategoryForm,
+    LessonForm,
+    SchoolClassForm,
+    SchoolFeeForm,
+    SchoolForm,
+    StaffForm,
+    StudentForm,
+    TeamForm,
+)
 from .models import (
     Department,
     EmploymentCategory,
     Lesson,
+    School,
     SchoolClass,
+    SchoolFee,
     Staff,
     Student,
     Team,
@@ -262,12 +277,6 @@ def team_detail(request, team_id):
     )
 
 
-from django.shortcuts import get_object_or_404, redirect, render
-
-from .forms import TeamForm
-from .models import Team
-
-
 def team_edit(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
 
@@ -371,3 +380,281 @@ def student_edit(request, pk):
             "student": student,
         },
     )
+
+
+def organization_overview(request):
+    all_departments = Department.objects.prefetch_related("teams__schoolclasses").all()
+    return render(
+        request,
+        "skole/homepage.html",
+        {
+            "all_departments": all_departments,
+        },
+    )
+
+
+class BaseEditView(UpdateView):
+    template_name = "skole/edit_form.html"
+    success_url = reverse_lazy("homepage")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Tilføj verbose_name til konteksten for at gøre det lettere at tilpasse skabeloner
+        context["verbose_name"] = self.model._meta.verbose_name
+        context["verbose_name_plural"] = self.model._meta.verbose_name_plural
+        return context
+
+
+class BaseCreateView(CreateView):
+    template_name = "skole/create_form.html"
+    success_url = reverse_lazy("homepage")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["verbose_name"] = self.model._meta.verbose_name
+        return context
+
+
+class SchoolCreateView(BaseCreateView):
+    model = School
+    form_class = SchoolForm
+
+
+class DepartmentCreateView(BaseCreateView):
+    model = Department
+    form_class = DepartmentForm
+
+
+class TeamCreateView(BaseCreateView):
+    model = Team
+    form_class = TeamForm
+
+
+class EmploymentCategoryCreateView(BaseCreateView):
+    model = EmploymentCategory
+    form_class = EmploymentCategoryForm
+
+
+class StaffCreateView(BaseCreateView):
+    model = Staff
+    form_class = StaffForm
+
+
+class LessonCreateView(BaseCreateView):
+    model = Lesson
+    form_class = LessonForm
+
+
+class SchoolFeeCreateView(BaseCreateView):
+    model = SchoolFee
+    form_class = SchoolFeeForm
+
+
+class StudentCreateView(BaseCreateView):
+    model = Student
+    form_class = StudentForm
+
+
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, ListView, UpdateView
+
+from .forms import (
+    DepartmentForm,
+    EmploymentCategoryForm,
+    LessonForm,
+    SchoolFeeForm,
+    SchoolForm,
+    StaffForm,
+    StudentForm,
+    TeamForm,
+)
+from .models import (
+    Department,
+    EmploymentCategory,
+    Lesson,
+    School,
+    SchoolClass,
+    SchoolFee,
+    Staff,
+    Student,
+    Team,
+)
+
+
+# School
+class SchoolListView(ListView):
+    model = School
+    template_name = "skole/school_list.html"
+    context_object_name = "schools"
+
+
+class SchoolDetailView(DetailView):
+    model = School
+    template_name = "skole/school_detail.html"
+    context_object_name = "school"
+
+
+class SchoolEditView(BaseEditView):
+    model = School
+    form_class = SchoolForm
+    template_name = "skole/edit_form.html"
+    success_url = reverse_lazy("school_list")
+
+
+# Department
+
+
+class DepartmentDetailView(DetailView):
+    model = Department
+    template_name = "skole/department_detail.html"
+    context_object_name = "department"
+
+
+class DepartmentEditView(BaseEditView):
+    model = Department
+    form_class = DepartmentForm
+    template_name = "skole/edit_form.html"
+    success_url = reverse_lazy("department_list")
+
+
+class TeamListView(ListView):
+    model = Team
+    template_name = "skole/team_list.html"
+    context_object_name = "teams"
+
+
+class TeamDetailView(DetailView):
+    model = Team
+    template_name = "skole/team_detail.html"
+    context_object_name = "team"
+
+
+class TeamEditView(BaseEditView):
+    model = Team
+    form_class = TeamForm
+    template_name = "skole/edit_form.html"
+    success_url = reverse_lazy("team_list")
+
+
+class SchoolClassListView(ListView):
+    model = SchoolClass
+    template_name = "skole/schoolclass_list.html"
+    context_object_name = "schoolclasses"
+
+
+class SchoolClassDetailView(DetailView):
+    model = SchoolClass
+    template_name = "skole/schoolclass_detail.html"
+    context_object_name = "schoolclass"
+
+
+class SchoolClassCreateView(BaseCreateView):
+    model = SchoolClass
+    form_class = SchoolClassForm
+
+
+class StudentEditView(BaseEditView):
+    model = Student
+    form_class = StudentForm
+    template_name = "skole/edit_form.html"
+    success_url = reverse_lazy("student_list")
+
+
+# Department Views
+class DepartmentListView(ListView):
+    model = Department
+    template_name = "skole/department_list.html"
+    context_object_name = "departments"
+
+
+# Student Views
+class StudentListView(ListView):
+    model = Student
+    template_name = "skole/student_list.html"
+    context_object_name = "students"
+
+
+class StudentDetailView(DetailView):
+    model = Student
+    template_name = "skole/student_detail.html"
+    context_object_name = "student"
+
+
+# Lesson Views
+class LessonListView(ListView):
+    model = Lesson
+    template_name = "skole/lesson_list.html"
+    context_object_name = "lessons"
+
+
+class LessonDetailView(DetailView):
+    model = Lesson
+    template_name = "skole/lesson_detail.html"
+    context_object_name = "lesson"
+
+
+class LessonEditView(BaseEditView):
+    model = Lesson
+    form_class = LessonForm
+    template_name = "skole/edit_form.html"
+    success_url = reverse_lazy("lesson_list")
+
+
+# EmploymentCategory Views
+class EmploymentCategoryListView(ListView):
+    model = EmploymentCategory
+    template_name = "skole/employmentcategory_list.html"
+    context_object_name = "employmentcategories"
+
+
+class EmploymentCategoryDetailView(DetailView):
+    model = EmploymentCategory
+    template_name = "skole/employmentcategory_detail.html"
+    context_object_name = "employmentcategory"
+
+
+class EmploymentCategoryEditView(BaseEditView):
+    model = EmploymentCategory
+    form_class = EmploymentCategoryForm
+    template_name = "skole/edit_form.html"
+    success_url = reverse_lazy("employmentcategory_list")
+
+
+# SchoolFee Views
+class SchoolFeeListView(ListView):
+    model = SchoolFee
+    template_name = "skole/schoolfee_list.html"
+    context_object_name = "schoolfees"
+
+
+class SchoolFeeDetailView(DetailView):
+    model = SchoolFee
+    template_name = "skole/schoolfee_detail.html"
+    context_object_name = "schoolfee"
+
+
+class SchoolFeeEditView(BaseEditView):
+    model = SchoolFee
+    form_class = SchoolFeeForm
+    template_name = "skole/edit_form.html"
+    success_url = reverse_lazy("schoolfee_list")
+
+
+# Staff Views
+class StaffListView(ListView):
+    model = Staff
+    template_name = "skole/staff_list.html"
+    context_object_name = "staff"
+
+
+class StaffDetailView(DetailView):
+    model = Staff
+    template_name = "skole/staff_detail.html"
+    context_object_name = "staffmember"
+
+
+class StaffEditView(BaseEditView):
+    model = Staff
+    form_class = StaffForm
+    template_name = "skole/edit_form.html"
+    success_url = reverse_lazy("staff_list")

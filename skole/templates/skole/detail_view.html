@@ -1,0 +1,7 @@
+{% extends "skole/base.html" %}
+
+{% block content %}
+<h1>{{ object.name }}</h1>
+<p>Detaljer om {{ view.model._meta.verbose_name }}</p>
+<a href="{% url view.model._meta.verbose_name|lower %}_edit pk=object.id %}" class="btn btn-warning">Rediger</a>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "skole/base.html" %}
+
+{% block content %}
+<h1>{{ school.name }}</h1>
+<p>Skolen indeholder følgende afdelinger:</p>
+<ul>
+    {% for department in school.departments.all %}
+    <li>{{ department.name }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'school_edit' pk=school.id %}" class="btn btn-warning mt-3">Rediger</a>
+{% endblock %}

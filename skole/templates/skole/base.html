@@ -25,5 +25,54 @@
         <hr>
         {% block content %}{% endblock content %}
     </div>
+    <hr>
+    <!-- ========== Start Footer ========== -->
+    <div class="container mt-4">
+        <h5>Opret nye elementer:</h5>
+        <div class="btn-group mb-3" role="group">
+            <!-- Knap til at oprette en ny afdeling -->
+            <a href="{% url 'department_create' %}" class="btn btn-warning">
+                + Afdeling
+            </a>
+
+            <!-- Knap til at oprette et nyt team -->
+            <a href="{% url 'team_create' %}" class="btn btn-primary">
+                + Team
+            </a>
+
+            <!-- Knap til at oprette en ny klasse -->
+            <a href="{% url 'schoolclass_create' %}" class="btn btn-success">
+                + Klasse
+            </a>
+        </div>
+        <div class="btn-group mb-3" role="group">
+            <!-- Knap til at oprette en ny elev -->
+            <a href="{% url 'student_create' %}" class="btn btn-info">
+                + Elev
+            </a>
+
+            <!-- Knap til at oprette en ny lektion -->
+            <a href="{% url 'lesson_create' %}" class="btn btn-secondary">
+                + Lektion
+            </a>
+        </div>
+        <div class="btn-group mb-3" role="group">
+            <!-- Knap til at oprette en ny personalekategori -->
+            <a href="{% url 'employmentcategory_create' %}" class="btn btn-dark">
+                + Personalekategori
+            </a>
+
+            <!-- Knap til at oprette en ny takst -->
+            <a href="{% url 'schoolfee_create' %}" class="btn btn-danger">
+                + Takst
+            </a>
+
+            <!-- Knap til at oprette en ny ansat -->
+            <a href="{% url 'staff_create' %}" class="btn btn-light">
+                + Ansat
+            </a>
+        </div>
+    </div>
+    <!-- ========== End Footer ========== -->
 </body>
 </html>

@@ -1,33 +1,93 @@
 {% extends "skole/base.html" %}
 
 {% block content %}
-<table class="table table-bordered mt-4">
-    <thead>
-        <tr>
-            <th>Afdeling</th>
-            <th>Team</th>
-            <th>Klasse</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                {% for top_department in all_departments %}
-                    <a href="{% url 'department_detail' department_id=top_department.id %}">{{ top_department.name }}</a><br>
+<div class="container mt-4">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                {% for department in all_departments %}
+                <th>
+                    <a class="text-white" href="{% url 'department_detail' department_id=department.id %}">
+                        {{ department.name }}
+                    </a>
+                </th>
                 {% endfor %}
-            </td>
-            <td>
-                {% for top_team in all_teams %}
-                    <a href="{% url 'team_detail' team_id=top_team.id %}">{{ top_team.name }}</a><br>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for department in all_departments %}
+                <td>
+                    <!-- Teams og Klasser -->
+                    <ul>
+                        {% for team in department.teams.all %}
+                        <li>
+                            <!-- Teamets navn -->
+                            <a href="{% url 'team_detail' team_id=team.id %}">
+                                {{ team.name }}
+                            </a>
+
+                            <!-- Klasser i teamet -->
+                            <ul>
+                                {% for schoolclass in team.schoolclasses.all %}
+                                <li>
+                                    <a href="{% url 'schoolclass_detail' class_id=schoolclass.id %}">
+                                        {{ schoolclass.name }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </td>
                 {% endfor %}
-            </td>
-            <td>
-                {% for top_schoolclass in all_schoolclasses %}
-                    <a href="{% url 'schoolclass_detail' class_id=top_schoolclass.id %}">{{ top_schoolclass.name }}</a><br>
-                {% endfor %}
-            </td>
-        </tr>
-    </tbody>
-</table>
-    
+            </tr>
+        </tbody>
+    </table>
+</div>
 {% endblock content %}
+
+
+{% comment %} {% extends "skole/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        {% for department in all_departments %}
+        <div class="col-md-4">
+            <!-- Afdelingens navn som kolonneoverskrift -->
+            <h3>
+                <a href="{% url 'department_detail' department_id=department.id %}">
+                    {{ department.name }}
+                </a>
+            </h3>
+
+            <!-- Teams og Klasser -->
+            <ul>
+                {% for team in department.teams.all %}
+                <li>
+                    <!-- Teamets navn -->
+                    <a href="{% url 'team_detail' team_id=team.id %}">
+                        {{ team.name }}
+                    </a>
+
+                    <!-- Klasser i teamet -->
+                    <ul>
+                        {% for schoolclass in team.schoolclasses.all %}
+                        <li>
+                            <a href="{% url 'schoolclass_detail' class_id=schoolclass.id %}">
+                                {{ schoolclass.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
+ {% endcomment %}

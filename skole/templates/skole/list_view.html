@@ -1,0 +1,11 @@
+{% extends "skole/base.html" %}
+
+{% block content %}
+<h1>{{ view.model._meta.verbose_name_plural }}</h1>
+<ul>
+    {% for obj in object_list %}
+    <li><a href="{% url view.model._meta.verbose_name|lower %}_detail pk=obj.id %}">{{ obj.name }}</a></li>
+    {% endfor %}
+</ul>
+<a href="{% url view.model._meta.verbose_name|lower %}_create %}" class="btn btn-primary">+ Opret ny</a>
+{% endblock %}
