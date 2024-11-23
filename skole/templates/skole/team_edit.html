@@ -1,0 +1,18 @@
+{% extends "skole/base.html" %}
+
+{% block content %}
+<div>
+    <a href="{% url 'homepage' %}">Kløver-Skolen</a> > 
+    <a href="{% url 'department_detail' department_id=team.department.id %}">
+        {{ team.department.name }}
+    </a> > Rediger Team
+</div>
+
+<h1>Rediger Team: {{ team.name }}</h1>
+
+<form method="post" class="mt-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Gem ændringer</button>
+</form>
+{% endblock content %}

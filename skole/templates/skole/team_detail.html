@@ -5,6 +5,9 @@
     <a href="{% url 'homepage' %}">Kløver-Skolen
     </a> > <a href="{% url 'department_detail' department_id=team.department.id %}">{{ team.department.name }}
     </a> > {{ team.name }}
+    <a href="{% url 'team_edit' team_id=team.id %}" class="text-decoration-none" title="Rediger team">
+        <i class="bi bi-pencil-square"></i>
+    </a>
     <h1>
     Team: 
     <a href="{% url 'department_detail' team.department.id %}" style="color: inherit; text-decoration: none;">{{ team.department.name }}

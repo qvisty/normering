@@ -262,6 +262,33 @@ def team_detail(request, team_id):
     )
 
 
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import TeamForm
+from .models import Team
+
+
+def team_edit(request, team_id):
+    team = get_object_or_404(Team, pk=team_id)
+
+    if request.method == "POST":
+        form = TeamForm(request.POST, instance=team)
+        if form.is_valid():
+            form.save()
+            return redirect("team_detail", team_id=team.pk)
+    else:
+        form = TeamForm(instance=team)
+
+    return render(
+        request,
+        "skole/team_edit.html",
+        {
+            "form": form,
+            "team": team,
+        },
+    )
+
+
 def department_detail(request, department_id):
     # Prefetch related teams and their related objects
     department = Department.objects.prefetch_related(
@@ -288,8 +315,42 @@ def department_detail(request, department_id):
 
 from django.shortcuts import get_object_or_404, redirect, render
 
+from .forms import DepartmentForm
+from .models import Department, Team
+
+
+def department_edit(request, department_id):
+    department = get_object_or_404(Department, pk=department_id)
+    teams = department.teams.prefetch_related("schoolclasses")
+
+    if request.method == "POST":
+        form = DepartmentForm(request.POST, instance=department)
+        if form.is_valid():
+            form.save()
+            return redirect("department_detail", department_id=department.pk)
+    else:
+        form = DepartmentForm(instance=department)
+
+    return render(
+        request,
+        "skole/department_edit.html",
+        {
+            "form": form,
+            "department": department,
+            "teams": teams,
+        },
+    )
+
+
+from django.shortcuts import get_object_or_404, redirect, render
+
 from .forms import StudentForm
 from .models import Student
+
+
+def student_detail(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    return render(request, "skole/student_detail.html", {"student": student})
 
 
 def student_edit(request, pk):

@@ -1,0 +1,52 @@
+{% extends "skole/base.html" %}
+
+{% block content %}
+<a href="{% url 'homepage' %}">Kløver-Skolen</a> > 
+<a href="{% url 'department_detail' department_id=student.schoolclass.team.department.id %}">
+    {{ student.schoolclass.team.department.name }}
+</a> > 
+<a href="{% url 'team_detail' team_id=student.schoolclass.team.id %}">
+    {{ student.schoolclass.team.name }}
+</a> > 
+<a href="{% url 'schoolclass_detail' class_id=student.schoolclass.id %}">
+    {{ student.schoolclass.name }}
+</a>
+
+<h1>{{ student.name }}</h1>
+<hr>
+
+<!-- Navigationslink -->
+<a href="{% url 'schoolclass_detail' class_id=student.schoolclass.pk %}" class="btn btn-secondary">
+    ← Tilbage til klassens side
+</a>
+<a href="{% url 'student_edit' pk=student.pk %}" class="btn btn-warning">
+    Rediger elev
+</a>
+<hr>
+
+<!-- Elevdetaljer -->
+<div class="card">
+    <div class="card-header">
+        Elevoplysninger
+    </div>
+    <div class="card-body">
+        <p><strong>Navn:</strong> {{ student.name }}</p>
+        <p><strong>Klasse:</strong> 
+            <a href="{% url 'schoolclass_detail' class_id=student.schoolclass.pk %}">
+                {{ student.schoolclass.name }}
+            </a>
+        </p>
+        <p><strong>Klassetrin:</strong> {{ student.age_number }}</p>
+        <p><strong>Fødselsdato:</strong> {{ student.date_of_birth|date:"d-m-Y" }}</p>
+        <p><strong>Takst:</strong> 
+            {% if student.school_fee %}
+                {{ student.school_fee.name }} - {{ student.school_fee.amount|floatformat }} kr.
+            {% else %}
+                Ingen takst tildelt
+            {% endif %}
+        </p>
+        <p><strong>Alder:</strong> {{ student.age }}</p>
+    </div>
+</div>
+
+{% endblock content %}

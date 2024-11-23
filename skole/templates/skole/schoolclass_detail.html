@@ -63,7 +63,12 @@
         <tbody>
             {% for student in schoolclass.students.all %}
             <tr>
-                <td>{{ student.name }}</td>
+                <!-- Gør elevens navn til et link til detaljesiden -->
+                <td>
+                    <a href="{% url 'student_detail' pk=student.pk %}">
+                        {{ student.name }}
+                    </a>
+                </td>
                 <td>{{ student.age_number }}</td>
                 <td>{{ student.school_fee.level }}</td>
                 <td>{{ student.school_fee.name }}</td>
